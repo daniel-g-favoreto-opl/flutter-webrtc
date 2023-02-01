@@ -1129,6 +1129,15 @@
   } else if ([@"getDesktopSourceThumbnail" isEqualToString:call.method]) {
     NSDictionary* argsMap = call.arguments;
     [self getDesktopSourceThumbnail:argsMap result:result];
+  } else if ([@"setCodecPreferences" isEqualToString:call.method]) {
+    NSDictionary* argsMap = call.arguments;
+    [self transceiverSetCodecPreferences:argsMap result:result];
+  }  else if ([@"getRtpReceiverCapabilities" isEqualToString:call.method]) {
+    NSDictionary* argsMap = call.arguments;
+    [self peerConnectionGetRtpReceiverCapabilities:argsMap result:result];
+  } else if ([@"getRtpSenderCapabilities" isEqualToString:call.method]) {
+    NSDictionary* argsMap = call.arguments;
+    [self peerConnectionGetRtpSenderCapabilities:argsMap result:result];
     } else if ([@"startRecordToFile" isEqualToString:call.method]){
         NSDictionary* argsMap = call.arguments;
         NSNumber* recorderId = argsMap[@"recorderId"];
