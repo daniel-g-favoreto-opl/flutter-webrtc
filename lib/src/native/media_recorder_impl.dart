@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:webrtc_interface/webrtc_interface.dart';
 
+import '../native/media_stream_track_impl.dart';
+
 import 'utils.dart';
 
 class MediaRecorderNative extends MediaRecorder {
@@ -31,6 +33,7 @@ class MediaRecorderNative extends MediaRecorder {
       if (audioTrack != null) 'audioTrackId': audioTrack.id,
       'rotation': rotationDegrees,
       'recorderId': _recorderId,
+      'peerConnectionId': videoTrack is MediaStreamTrackNative ? videoTrack.peerConnectionId : null
     });
     _isStarted = true;
   }
@@ -43,6 +46,7 @@ class MediaRecorderNative extends MediaRecorder {
     await WebRTC.invokeMethod('changeRecorderTrack', {
       'videoTrackId': videoTrack.id,
       'recorderId': _recorderId,
+      'peerConnectionId': videoTrack is MediaStreamTrackNative ? videoTrack.peerConnectionId : null
     });
   }
 
