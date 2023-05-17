@@ -46,7 +46,9 @@ class MediaRecorderNative extends MediaRecorder {
     await WebRTC.invokeMethod('changeRecorderTrack', {
       'videoTrackId': videoTrack.id,
       'recorderId': _recorderId,
-      'peerConnectionId': videoTrack is MediaStreamTrackNative ? videoTrack.peerConnectionId : null
+      'peerConnectionId': videoTrack is MediaStreamTrackNative
+          ? videoTrack.peerConnectionId
+          : null
     });
   }
 
