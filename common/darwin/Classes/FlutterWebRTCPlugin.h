@@ -11,6 +11,8 @@
 @class FlutterRTCFrameCapturer;
 @class FlutterRTCMediaRecorder;
 
+void postEvent(FlutterEventSink sink, id _Nullable event);
+
 typedef void (^CompletionHandler)(void);
 
 typedef void (^CapturerStopHandler)(CompletionHandler handler);
