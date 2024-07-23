@@ -101,6 +101,16 @@ void postEvent(FlutterEventSink _Nonnull sink, id _Nullable event) {
 #endif
 }
 
+static FlutterWebRTCPlugin *sharedSingleton;
+
++ (FlutterWebRTCPlugin *)sharedSingleton
+{
+  @synchronized(self)
+  {
+    return sharedSingleton;
+  }
+}
+
 @synthesize messenger = _messenger;
 @synthesize eventSink = _eventSink;
 @synthesize preferredInput = _preferredInput;
@@ -132,6 +142,7 @@ void postEvent(FlutterEventSink _Nonnull sink, id _Nullable event) {
                    withTextures:(NSObject<FlutterTextureRegistry>*)textures {
 
   self = [super init];
+  sharedSingleton = self;
 
   FlutterEventChannel* eventChannel =
       [FlutterEventChannel eventChannelWithName:@"FlutterWebRTC.Event" binaryMessenger:messenger];

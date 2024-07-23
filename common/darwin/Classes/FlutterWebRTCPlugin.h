@@ -46,7 +46,8 @@ typedef void (^CapturerStopHandler)(CompletionHandler _Nonnull handler);
     NSMutableDictionary<NSString*, RTCFrameCryptorKeyProvider*>* _Nullable keyProviders;
 
 #if TARGET_OS_IPHONE
-@property(nonatomic, retain) UIViewController* _Nullable viewController; /*for broadcast or ReplayKit */
+@property(nonatomic, retain)
+    UIViewController* _Nullable viewController; /*for broadcast or ReplayKit */
 #endif
 
 @property(nonatomic, strong) FlutterEventSink _Nullable eventSink;
@@ -66,6 +67,8 @@ typedef void (^CapturerStopHandler)(CompletionHandler _Nonnull handler);
                                                    Id:(NSString* _Nonnull)Id;
 - (NSDictionary* _Nullable)mediaStreamToMap:(RTCMediaStream* _Nonnull)stream
                                    ownerTag:(NSString* _Nonnull)ownerTag;
+- (RTCMediaStreamTrack* _Nullable)trackForId:(NSString* _Nonnull)trackId
+                            peerConnectionId:(NSString*)peerConnectionId;
 - (NSDictionary* _Nullable)mediaTrackToMap:(RTCMediaStreamTrack* _Nonnull)track;
 - (NSDictionary* _Nullable)receiverToMap:(RTCRtpReceiver* _Nonnull)receiver;
 - (NSDictionary* _Nullable)transceiverToMap:(RTCRtpTransceiver* _Nonnull)transceiver;
@@ -78,5 +81,6 @@ typedef void (^CapturerStopHandler)(CompletionHandler _Nonnull handler);
                                              Id:(NSString* _Nonnull)Id;
 - (RTCRtpSender* _Nullable)getRtpSenderById:(RTCPeerConnection* _Nonnull)peerConnection
                                          Id:(NSString* _Nonnull)Id;
++ (FlutterWebRTCPlugin*)sharedSingleton;
 
 @end
