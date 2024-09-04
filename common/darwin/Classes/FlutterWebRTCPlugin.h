@@ -62,11 +62,13 @@ typedef void (^CapturerStopHandler)(CompletionHandler _Nonnull handler);
 @property(nonatomic) NSInteger _lastTargetFps;
 
 - (RTCMediaStream* _Nullable)streamForId:(NSString* _Nonnull)streamId
-                        peerConnectionId:(NSString* _Nonnull)peerConnectionId;
+                        peerConnectionId:(NSString* _Nullable)peerConnectionId;
+- (RTCMediaStreamTrack* _Nullable)trackForId:(NSString* _Nonnull)trackId
+                            peerConnectionId:(NSString* _Nullable)peerConnectionId;
 - (RTCRtpTransceiver* _Nullable)getRtpTransceiverById:(RTCPeerConnection* _Nonnull)peerConnection
-                                                   Id:(NSString* _Nonnull)Id;
+                                                   Id:(NSString* _Nullable)Id;
 - (NSDictionary* _Nullable)mediaStreamToMap:(RTCMediaStream* _Nonnull)stream
-                                   ownerTag:(NSString* _Nonnull)ownerTag;
+                                   ownerTag:(NSString* _Nullable)ownerTag;
 - (RTCMediaStreamTrack* _Nullable)trackForId:(NSString* _Nonnull)trackId
                             peerConnectionId:(NSString*)peerConnectionId;
 - (NSDictionary* _Nullable)mediaTrackToMap:(RTCMediaStreamTrack* _Nonnull)track;
@@ -81,6 +83,7 @@ typedef void (^CapturerStopHandler)(CompletionHandler _Nonnull handler);
                                              Id:(NSString* _Nonnull)Id;
 - (RTCRtpSender* _Nullable)getRtpSenderById:(RTCPeerConnection* _Nonnull)peerConnection
                                          Id:(NSString* _Nonnull)Id;
-+ (FlutterWebRTCPlugin*)sharedSingleton;
+
++ (FlutterWebRTCPlugin* _Nullable)sharedSingleton;
 
 @end
