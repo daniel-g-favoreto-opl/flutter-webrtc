@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,9 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
   final _localRenderer = RTCVideoRenderer();
   bool _inCalling = false;
   bool _isTorchOn = false;
+  bool _isFrontCamera = true;
   MediaRecorder? _mediaRecorder;
+
   bool get _isRec => _mediaRecorder != null;
 
   List<MediaDeviceInfo>? _mediaDevicesList;
@@ -141,6 +144,15 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
     });
   }
 
+  void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
+    final point = Point<double>(
+      details.localPosition.dx / constraints.maxWidth,
+      details.localPosition.dy / constraints.maxHeight,
+    );
+    Helper.setFocusPoint(_localStream!.getVideoTracks().first, point);
+    Helper.setExposurePoint(_localStream!.getVideoTracks().first, point);
+  }
+
   void _toggleTorch() async {
     if (_localStream == null) throw Exception('Stream is not initialized');
 
@@ -158,13 +170,27 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
     }
   }
 
-  void _toggleCamera() async {
+  void setZoom(double zoomLevel) async {
+    if (_localStream == null) throw Exception('Stream is not initialized');
+    // await videoTrack.setZoom(zoomLevel); //Use it after published webrtc_interface 1.1.1
+
+    // before the release, use can just call native method directly.
+    final videoTrack = _localStream!
+        .getVideoTracks()
+        .firstWhere((track) => track.kind == 'video');
+    await Helper.setZoom(videoTrack, zoomLevel);
+  }
+
+  void _switchCamera() async {
     if (_localStream == null) throw Exception('Stream is not initialized');
 
     final videoTrack = _localStream!
         .getVideoTracks()
         .firstWhere((track) => track.kind == 'video');
     await Helper.switchCamera(videoTrack);
+    setState(() {
+      _isFrontCamera = _isFrontCamera;
+    });
   }
 
   void _captureFrame() async {
@@ -201,7 +227,7 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
                 ),
                 IconButton(
                   icon: Icon(Icons.switch_video),
-                  onPressed: _toggleCamera,
+                  onPressed: _switchCamera,
                 ),
                 IconButton(
                   icon: Icon(Icons.camera),
@@ -233,14 +259,26 @@ class _GetUserMediaSampleState extends State<GetUserMediaSample> {
       body: OrientationBuilder(
         builder: (context, orientation) {
           return Center(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(color: Colors.black54),
-              child: RTCVideoView(_localRenderer, mirror: true),
-            ),
-          );
+              child: Container(
+            margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(color: Colors.black54),
+            child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              return GestureDetector(
+                onScaleStart: (details) {},
+                onScaleUpdate: (details) {
+                  if (details.scale != 1.0) {
+                    setZoom(details.scale);
+                  }
+                },
+                onTapDown: (TapDownDetails details) =>
+                    onViewFinderTap(details, constraints),
+                child: RTCVideoView(_localRenderer, mirror: false),
+              );
+            }),
+          ));
         },
       ),
       floatingActionButton: FloatingActionButton(

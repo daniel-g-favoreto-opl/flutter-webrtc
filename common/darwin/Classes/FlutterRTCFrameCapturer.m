@@ -10,27 +10,27 @@
 @import CoreVideo;
 
 @implementation FlutterRTCFrameCapturer {
-    RTCVideoTrack* _track;
-    NSString* _path;
-    FlutterResult _result;
-    bool _gotFrame;
+  RTCVideoTrack* _track;
+  NSString* _path;
+  FlutterResult _result;
+  bool _gotFrame;
 }
 
-- (instancetype)initWithTrack:(RTCVideoTrack *) track toPath:(NSString *) path result:(FlutterResult)result
-{
-    self = [super init];
-    if (self) {
-        _gotFrame = false;
-        _track = track;
-        _path = path;
-        _result = result;
-        [track addRenderer:self];
-    }
-    return self;
+- (instancetype)initWithTrack:(RTCVideoTrack*)track
+                       toPath:(NSString*)path
+                       result:(FlutterResult)result {
+  self = [super init];
+  if (self) {
+    _gotFrame = false;
+    _track = track;
+    _path = path;
+    _result = result;
+    [track addRenderer:self];
+  }
+  return self;
 }
 
-- (void)setSize:(CGSize)size
-{
+- (void)setSize:(CGSize)size {
 }
 
 - (void)renderFrame:(nullable RTCVideoFrame *)frame
@@ -113,7 +113,7 @@
     });
 }
 
-+ (CVPixelBufferRef)convertToCVPixelBuffer:(RTCVideoFrame *) frame
+-(CVPixelBufferRef)convertToCVPixelBuffer:(RTCVideoFrame *) frame
 {
     id<RTCI420Buffer> i420Buffer = [frame.buffer toI420];
     CVPixelBufferRef outputPixelBuffer;
